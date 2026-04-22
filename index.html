@@ -302,7 +302,12 @@
       }
     }
 
-    const match = sheetData.find(row => (row[COL.uniqueNo] || '').toLowerCase() === uid.toLowerCase());
+    const match = sheetData.find(row => {
+  // Remove all spaces and convert to lowercase for both
+  const sheetId = (row[COL.uniqueNo] || '').toLowerCase().replace(/\s+/g, '');
+  const inputId = uid.toLowerCase().replace(/\s+/g, '');
+  return sheetId === inputId;
+});
     if (!match) {
       showStatus("❌ આ નંબરની વિગત મળી નથી.", 'error');
     } else {
