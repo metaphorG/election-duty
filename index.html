@@ -62,7 +62,6 @@
     padding: 20px 15px;
   }
 
-  /* BIG BUTTON STYLE */
   .btn-large {
     background: var(--saffron);
     color: #000;
@@ -75,9 +74,9 @@
     cursor: pointer;
     width: 100%;
     box-shadow: 0 4px 15px rgba(255,107,0,0.3);
+    margin-top: 10px;
   }
 
-  /* STATE CARDS */
   .card {
     background: var(--card);
     border: 2px solid var(--border);
@@ -102,6 +101,21 @@
     text-align: left;
   }
 
+  /* DEBUG BOX */
+  .debug-box {
+    margin-top: 20px;
+    padding: 15px;
+    background: rgba(255,255,255,0.05);
+    border: 1px dashed var(--muted);
+    border-radius: 10px;
+    text-align: left;
+    font-family: monospace;
+    font-size: 12px;
+    color: var(--subtext);
+    line-height: 1.4;
+  }
+  .debug-box b { color: var(--accent); }
+
   /* MAIN SEARCH */
   #mainContent { display: none; }
   
@@ -113,8 +127,6 @@
     color: var(--saffron);
   }
 
-  .input-group { margin-bottom: 20px; }
-  
   #uidInput {
     width: 100%;
     background: #fff;
@@ -128,7 +140,6 @@
     margin-bottom: 15px;
   }
 
-  /* RESULT STYLING */
   #resultCard {
     margin-top: 25px;
     background: #fff;
@@ -141,7 +152,6 @@
   .res-head { background: var(--saffron); padding: 20px; color: #000; }
   .res-head h2 { color: #000; margin: 0; font-size: 26px; }
   
-  .res-body { padding: 0; }
   .info-row {
     padding: 15px 20px;
     border-bottom: 1px solid #eee;
@@ -192,16 +202,16 @@
 
 <header>
   <div class="emblem">🗳️</div>
-  <h1>વિગતવાર ઓર્ડરની ફક્ત માહિતી.</h1>
-  <p>અમદાવાદ મહાનગરપાલિકાના વોર્ડ નં.૧૧,૧૨,૧૪ની સામાન્ય ચૂંટણી</p>
+  <h1>Election <span>Duty</span> Card</h1>
+  <p>અમદાવાદ મહાનગરપાલિકા સામાન્ય ચૂંટણી ૨૦૨૬</p>
 </header>
 
 <div class="container">
 
   <div id="geoGate" class="card">
     <span class="icon-big">📍</span>
-    <h2>લોકેશન ચેક થઈ રહ્યું છે</h2>
-    <p class="gujarati">કૃપા કરીને 'Allow' અથવા 'હા' બટન પર ક્લિક કરો જેથી તમારી હાજરી ચકાસી શકાય.</p>
+    <h2>લોકેશન ચકાસણી...</h2>
+    <p class="gujarati">કૃપા કરીને 'Allow' પર ક્લિક કરો જેથી તમારી હાજરી ચકાસી શકાય.</p>
   </div>
 
   <div id="blockedScreen" class="card">
@@ -210,21 +220,23 @@
     <div class="blocked-msg gujarati">
       જ્યારે તમે <strong>શ્રીમતી જી.જી.આઈ. કેન્ટોનમેન્ટ હાઇસ્કુલ, શાહીબાગ</strong> ખાતે હાજર થશો ત્યારે જ આ માહિતી ખુલશે.
     </div>
+    
+    <div id="debugInfo" class="debug-box">
+      Location data loading...
+    </div>
+
     <button class="btn-large" onclick="location.reload()">ફરી પ્રયાસ કરો (Retry)</button>
   </div>
 
   <div id="mainContent">
-    <div class="card" style="padding: 20px; margin-bottom: 20px; border-color: var(--green);">
-      <p class="gujarati" style="color:var(--green); font-weight:700;">✅ લોકેશન વેરીફાય થઈ ગયું છે</p>
+    <div class="card" style="padding: 15px; margin-bottom: 20px; border-color: var(--green);">
+      <p class="gujarati" style="color:var(--green); font-weight:700; font-size:16px;">✅ લોકેશન વેરીફાય થઈ ગયું છે</p>
     </div>
 
     <div class="card">
-      <label class="search-label">તમારો Unique ID દાખલ કરો:</label>
-      <div class="input-group">
-        <input type="text" id="uidInput" placeholder="દા.ત. GMB001" autocomplete="off">
-        <button class="btn-large" onclick="search()">માહિતી મેળવો (Search)</button>
-      </div>
-      <p class="gujarati" style="font-size:14px; color:var(--muted)">તમારા ઓર્ડર પર લખેલો નંબર અહીં ટાઈપ કરો.</p>
+      <label class="search-label">Unique ID દાખલ કરો:</label>
+      <input type="text" id="uidInput" placeholder="દા.ત. GMB001" autocomplete="off">
+      <button class="btn-large" onclick="search()">માહિતી મેળવો</button>
     </div>
 
     <div id="statusMsg"></div>
@@ -238,12 +250,11 @@
 </div>
 
 <script>
-  // CONFIG
   const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTKxlpr-uAoZV-QaeX5l5Epe0o9141kQqh-ZS3K7RpguNKret-Jlh4rwlx3OKZLJlFArnpOI8mMEjxM/pub?gid=0&single=true&output=csv";
   
   const GEO_LAT = 23.225768239954164;
   const GEO_LNG = 72.63726128339411;
-  const GEO_RADIUS = 10000; // 10 KM Radius
+  const GEO_RADIUS = 5000; 
 
   const COL = {
     uniqueNo: "unique number",
@@ -267,16 +278,46 @@
   }
 
   (function checkGeo() {
-    if (!navigator.geolocation) { showBlocked(); return; }
+    if (!navigator.geolocation) { 
+      updateDebug("Not Supported", "N/A", "N/A");
+      showBlocked(); 
+      return; 
+    }
+    
     navigator.geolocation.getCurrentPosition(
       pos => {
-        const d = haversine(pos.coords.latitude, pos.coords.longitude, GEO_LAT, GEO_LNG);
-        d <= GEO_RADIUS ? showMain() : showBlocked();
+        const uLat = pos.coords.latitude;
+        const uLng = pos.coords.longitude;
+        const dist = haversine(uLat, uLng, GEO_LAT, GEO_LNG);
+        
+        updateDebug("Success", uLat, uLng, dist);
+        
+        if (dist <= GEO_RADIUS) {
+          showMain();
+        } else {
+          showBlocked();
+        }
       },
-      () => showBlocked(),
+      err => {
+        updateDebug("Error: " + err.message, "N/A", "N/A", "N/A");
+        showBlocked();
+      },
       { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
     );
   })();
+
+  function updateDebug(status, lat, lng, dist) {
+    const debug = document.getElementById('debugInfo');
+    debug.innerHTML = `
+      <b>Status:</b> ${status}<br>
+      <b>Your Lat:</b> ${lat}<br>
+      <b>Your Lng:</b> ${lng}<br>
+      <b>Target Lat:</b> ${GEO_LAT}<br>
+      <b>Target Lng:</b> ${GEO_LNG}<br>
+      <b>Distance:</b> ${dist !== "N/A" ? Math.round(dist) + " meters" : "N/A"}<br>
+      <b>Allowed Radius:</b> ${GEO_RADIUS} meters
+    `;
+  }
 
   function showMain() {
     document.getElementById('geoGate').style.display = 'none';
@@ -291,35 +332,26 @@
 
   let sheetData = null;
 
-  function showStatus(msg, type) {
-    const el = document.getElementById('statusMsg');
-    el.textContent = msg;
-    el.className = type === 'error' ? 'msg-error' : 'msg-loading';
-    el.style.display = 'block';
-  }
-
   async function search() {
     const uid = document.getElementById('uidInput').value.trim();
-    if (!uid) { showStatus("⚠️ મહેરબાની કરીને ID ટાઈપ કરો", 'error'); return; }
-    
+    if (!uid) { showStatus("⚠️ ID દાખલ કરો", 'error'); return; }
     document.getElementById('resultCard').style.display = 'none';
     
     if (!sheetData) {
       showStatus("📡 ડેટા લોડ થઈ રહ્યો છે...", 'loading');
       try {
         const r = await fetch(SHEET_CSV_URL);
-        const text = await r.text();
-        sheetData = parseCSV(text);
+        sheetData = parseCSV(await r.text());
         document.getElementById('statusMsg').style.display = 'none';
       } catch (e) {
-        showStatus("❌ સર્વર સાથે જોડાણ થઈ શક્યું નથી", 'error');
+        showStatus("❌ ડેટા લોડ કરવામાં ભૂલ આવી", 'error');
         return;
       }
     }
 
     const match = sheetData.find(row => (row[COL.uniqueNo] || '').toLowerCase() === uid.toLowerCase());
     if (!match) {
-      showStatus("❌ આ નંબરની વિગત મળી નથી. ફરી ચેક કરો.", 'error');
+      showStatus("❌ આ નંબરની વિગત મળી નથી", 'error');
     } else {
       renderResult(match);
     }
@@ -341,40 +373,35 @@
     rc.style.display = 'block';
     rc.innerHTML = `
       <div class="res-head">
-        <p style="font-size:12px; font-weight:bold; opacity:0.8;">UNIQUE ID: ${row[COL.uniqueNo]}</p>
-        <h2>${row[COL.duty] || 'Duty Information'}</h2>
+        <p style="font-size:12px; font-weight:bold; opacity:0.8;">ID: ${row[COL.uniqueNo]}</p>
+        <h2>${row[COL.duty] || 'Duty'}</h2>
       </div>
       <div class="res-body">
-        <div class="info-row">
-          <span class="info-label">Ward No.</span>
-          <span class="info-val">${row[COL.wardNo] || '-'}</span>
-        </div>
-        <div class="info-row">
-          <span class="info-label">Booth No.</span>
-          <span class="info-val">${row[COL.boothNo] || '-'}</span>
-        </div>
-        <div class="info-row full-row">
-          <span class="info-label">Booth Name</span>
-          <span class="info-val">${row[COL.boothName] || '-'}</span>
-        </div>
-        <div class="info-row full-row">
-          <span class="info-label">Route No.</span>
-          <span class="info-val">${row[COL.routeNo] || '-'}</span>
-        </div>
+        <div class="info-row"><span class="info-label">Ward No.</span><span class="info-val">${row[COL.wardNo] || '-'}</span></div>
+        <div class="info-row"><span class="info-label">Booth No.</span><span class="info-val">${row[COL.boothNo] || '-'}</span></div>
+        <div class="info-row full-row"><span class="info-label">Booth Name</span><span class="info-val">${row[COL.boothName] || '-'}</span></div>
+        <div class="info-row full-row"><span class="info-label">Route No.</span><span class="info-val">${row[COL.routeNo] || '-'}</span></div>
         <div style="padding:20px; background:#f9f9f9;">
           <p class="info-label" style="margin-bottom:10px;">Contact Officers</p>
           <div style="margin-bottom:15px;">
             <strong>Zonal: ${row[COL.zonalName] || '-'}</strong>
-            ${row[COL.zonalNo] ? `<a href="tel:${row[COL.zonalNo]}" class="call-btn">📞 ફોન કરો: ${row[COL.zonalNo]}</a>` : ''}
+            ${row[COL.zonalNo] ? `<a href="tel:${row[COL.zonalNo]}" class="call-btn">📞 ફોન: ${row[COL.zonalNo]}</a>` : ''}
           </div>
           <div>
             <strong>Asst: ${row[COL.assZonalName] || '-'}</strong>
-            ${row[COL.assZonalNo] ? `<a href="tel:${row[COL.assZonalNo]}" class="call-btn">📞 ફોન કરો: ${row[COL.assZonalNo]}</a>` : ''}
+            ${row[COL.assZonalNo] ? `<a href="tel:${row[COL.assZonalNo]}" class="call-btn">📞 ફોન: ${row[COL.assZonalNo]}</a>` : ''}
           </div>
         </div>
       </div>
     `;
     rc.scrollIntoView({ behavior: 'smooth' });
+  }
+
+  function showStatus(msg, type) {
+    const el = document.getElementById('statusMsg');
+    el.textContent = msg;
+    el.className = type === 'error' ? 'msg-error' : 'msg-loading';
+    el.style.display = 'block';
   }
 </script>
 
