@@ -4,19 +4,19 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Election Duty Card</title>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Gujarati:wght@400;600;700&family=Rajdhani:wght@500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Gujarati:wght@400;600;700&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
     --saffron: #FF6B00;
     --deep: #1a0a00;
     --card: #1e1208;
     --border: #3a2010;
-    --muted: #7a5a3a;
+    --muted: #a08060;
     --accent: #FFB347;
     --green: #2ECC71;
     --red: #e74c3c;
-    --text: #f5e6d0;
-    --subtext: #b89070;
+    --text: #ffffff;
+    --subtext: #dcc8b0;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -26,335 +26,165 @@
     color: var(--text);
     font-family: 'Rajdhani', sans-serif;
     min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 0 0 60px;
-    position: relative;
-    overflow-x: hidden;
-  }
-
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background:
-      radial-gradient(ellipse 80% 50% at 50% -10%, rgba(255,107,0,0.18) 0%, transparent 70%),
-      radial-gradient(ellipse 50% 30% at 80% 90%, rgba(255,107,0,0.08) 0%, transparent 60%);
-    pointer-events: none;
-    z-index: 0;
+    padding-bottom: 40px;
+    line-height: 1.5;
   }
 
   header {
-    width: 100%;
-    background: linear-gradient(135deg, #2a0f00 0%, #1a0800 100%);
-    border-bottom: 2px solid var(--saffron);
-    padding: 18px 20px 14px;
+    background: linear-gradient(135deg, #331500 0%, #1a0800 100%);
+    border-bottom: 4px solid var(--saffron);
+    padding: 25px 15px;
     text-align: center;
-    position: relative;
-    z-index: 1;
-    box-shadow: 0 4px 30px rgba(255,107,0,0.2);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
   }
 
-  .header-badge {
-    display: inline-block;
-    font-family: 'Space Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 3px;
-    color: var(--saffron);
-    text-transform: uppercase;
-    margin-bottom: 6px;
-    opacity: 0.8;
-  }
-
+  .emblem { font-size: 40px; margin-bottom: 10px; }
+  
   header h1 {
-    font-family: 'Rajdhani', sans-serif;
-    font-size: clamp(22px, 5vw, 32px);
+    font-size: 28px;
     font-weight: 700;
     color: var(--text);
-    line-height: 1.1;
+    margin-bottom: 8px;
   }
-
   header h1 span { color: var(--saffron); }
 
   header p {
-    font-size: 13px;
+    font-size: 16px;
     color: var(--subtext);
-    margin-top: 4px;
     font-family: 'Noto Sans Gujarati', sans-serif;
+    font-weight: 600;
   }
-
-  .emblem { font-size: 28px; margin-bottom: 4px; }
 
   .container {
     width: 100%;
-    max-width: 520px;
-    padding: 28px 18px 0;
-    position: relative;
-    z-index: 1;
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 20px 15px;
   }
 
-  /* GEO CHECKING STATE */
-  #geoGate { display: flex; flex-direction: column; align-items: center; text-align: center; }
-
-  .geo-checking {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 36px 24px;
-    box-shadow: 0 8px 40px rgba(0,0,0,0.5);
-    animation: pulse 1.8s ease-in-out infinite;
-    width: 100%;
-  }
-
-  @keyframes pulse {
-    0%, 100% { box-shadow: 0 8px 40px rgba(0,0,0,0.5), 0 0 0 0 rgba(255,107,0,0.0); }
-    50%       { box-shadow: 0 8px 40px rgba(0,0,0,0.5), 0 0 0 12px rgba(255,107,0,0.08); }
-  }
-
-  .geo-icon { font-size: 52px; margin-bottom: 16px; display: block; }
-
-  .geo-checking h2 {
-    font-size: 20px; font-weight: 700; color: var(--accent);
-    margin-bottom: 10px; font-family: 'Rajdhani', sans-serif;
-  }
-
-  .geo-checking p {
-    font-size: 14px; color: var(--subtext); line-height: 1.7;
-    font-family: 'Noto Sans Gujarati', sans-serif;
-  }
-
-  /* BLOCKED STATE */
-  #blockedScreen { display: none; width: 100%; }
-
-  .blocked-card {
-    background: var(--card);
-    border: 1.5px solid rgba(231,76,60,0.35);
-    border-radius: 20px;
-    padding: 32px 22px;
-    text-align: center;
-    box-shadow: 0 8px 40px rgba(0,0,0,0.5), 0 0 30px rgba(231,76,60,0.08);
-  }
-
-  .blocked-icon { font-size: 56px; margin-bottom: 16px; display: block; }
-
-  .blocked-card h2 {
-    font-size: 18px; font-weight: 700; color: var(--red);
-    margin-bottom: 16px; font-family: 'Rajdhani', sans-serif; letter-spacing: 0.5px;
-  }
-
-  .blocked-msg {
-    background: rgba(231,76,60,0.07);
-    border: 1px solid rgba(231,76,60,0.2);
+  /* BIG BUTTON STYLE */
+  .btn-large {
+    background: var(--saffron);
+    color: #000;
+    border: none;
     border-radius: 12px;
-    padding: 20px 18px;
-    font-size: 15px;
-    line-height: 2;
-    color: var(--text);
-    font-family: 'Noto Sans Gujarati', sans-serif;
-    text-align: left;
+    padding: 18px 25px;
+    font-size: 20px;
+    font-weight: 700;
+    font-family: 'Rajdhani', sans-serif;
+    cursor: pointer;
+    width: 100%;
+    box-shadow: 0 4px 15px rgba(255,107,0,0.3);
   }
 
-  .blocked-msg strong {
-    color: var(--accent);
-    display: block;
-    margin-bottom: 10px;
-    font-size: 15px;
-    font-family: 'Rajdhani', sans-serif;
-    letter-spacing: 0.5px;
+  /* STATE CARDS */
+  .card {
+    background: var(--card);
+    border: 2px solid var(--border);
+    border-radius: 20px;
+    padding: 30px 20px;
     text-align: center;
   }
 
-  .location-hint {
-    margin-top: 18px;
-    padding: 12px 16px;
-    background: rgba(255,107,0,0.06);
-    border: 1px solid rgba(255,107,0,0.15);
-    border-radius: 10px;
-    font-size: 12px;
-    color: var(--muted);
-    font-family: 'Space Mono', monospace;
-    line-height: 1.7;
+  .icon-big { font-size: 60px; margin-bottom: 20px; display: block; }
+
+  h2 { font-size: 24px; color: var(--accent); margin-bottom: 15px; }
+  p.gujarati { font-family: 'Noto Sans Gujarati', sans-serif; font-size: 18px; line-height: 1.6; }
+
+  /* BLOCKED SCREEN */
+  #blockedScreen { display: none; }
+  .blocked-msg {
+    background: rgba(231,76,60,0.1);
+    border: 1px solid var(--red);
+    border-radius: 15px;
+    padding: 20px;
+    margin: 20px 0;
     text-align: left;
   }
 
-  .location-hint span { color: var(--saffron); }
-
-  /* MAIN CONTENT */
-  #mainContent { display: none; width: 100%; }
-
-  .geo-ok-badge {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    background: rgba(46,204,113,0.08);
-    border: 1px solid rgba(46,204,113,0.25);
-    border-radius: 10px;
-    padding: 9px 14px;
-    margin-bottom: 16px;
-    font-size: 13px;
-    color: var(--green);
-    font-family: 'Space Mono', monospace;
-  }
-
-  .search-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 24px 20px;
-    box-shadow: 0 8px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,107,0,0.08);
-  }
-
+  /* MAIN SEARCH */
+  #mainContent { display: none; }
+  
   .search-label {
     display: block;
-    font-size: 13px; letter-spacing: 1.5px; text-transform: uppercase;
-    color: var(--saffron); font-family: 'Space Mono', monospace; margin-bottom: 10px;
-  }
-
-  .input-row { display: flex; gap: 10px; }
-
-  #uidInput {
-    flex: 1;
-    background: rgba(255,255,255,0.05);
-    border: 1.5px solid var(--border);
-    border-radius: 10px;
-    color: var(--text);
-    font-family: 'Space Mono', monospace;
     font-size: 18px;
-    padding: 13px 16px;
-    outline: none;
-    transition: border-color 0.2s, box-shadow 0.2s;
-    letter-spacing: 2px;
-    text-align: center;
-  }
-
-  #uidInput:focus {
-    border-color: var(--saffron);
-    box-shadow: 0 0 0 3px rgba(255,107,0,0.15);
-  }
-
-  #uidInput::placeholder { color: var(--muted); letter-spacing: 1px; font-size: 14px; }
-
-  #searchBtn {
-    background: var(--saffron);
-    color: #1a0800;
-    border: none;
-    border-radius: 10px;
-    padding: 13px 20px;
-    font-family: 'Rajdhani', sans-serif;
     font-weight: 700;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background 0.2s, transform 0.1s;
-    white-space: nowrap;
+    margin-bottom: 12px;
+    color: var(--saffron);
   }
 
-  #searchBtn:active { transform: scale(0.97); background: #e05e00; }
-  #searchBtn:hover  { background: #ff8c2a; }
+  .input-group { margin-bottom: 20px; }
+  
+  #uidInput {
+    width: 100%;
+    background: #fff;
+    border: 3px solid var(--border);
+    border-radius: 12px;
+    color: #000;
+    font-size: 24px;
+    font-weight: 700;
+    padding: 15px;
+    text-align: center;
+    margin-bottom: 15px;
+  }
 
-  .hint {
-    margin-top: 10px; font-size: 12px; color: var(--muted);
-    text-align: center; font-family: 'Noto Sans Gujarati', sans-serif;
+  /* RESULT STYLING */
+  #resultCard {
+    margin-top: 25px;
+    background: #fff;
+    color: #000;
+    border-radius: 20px;
+    overflow: hidden;
+    display: none;
+  }
+
+  .res-head { background: var(--saffron); padding: 20px; color: #000; }
+  .res-head h2 { color: #000; margin: 0; font-size: 26px; }
+  
+  .res-body { padding: 0; }
+  .info-row {
+    padding: 15px 20px;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .info-label { font-size: 14px; color: #666; font-weight: 700; text-transform: uppercase; }
+  .info-val { font-size: 20px; font-weight: 700; color: #000; text-align: right; }
+  .full-row { flex-direction: column; align-items: flex-start; }
+  .full-row .info-val { text-align: left; margin-top: 5px; font-size: 22px; color: var(--saffron); }
+
+  .call-btn {
+    display: block;
+    background: #e8f5e9;
+    color: #2e7d32;
+    text-decoration: none;
+    padding: 12px;
+    border-radius: 10px;
+    margin-top: 8px;
+    font-weight: 700;
+    font-size: 18px;
+    border: 1px solid #2ecc71;
+    text-align: center;
   }
 
   #statusMsg {
-    margin-top: 20px; text-align: center; font-size: 15px;
-    padding: 12px; border-radius: 10px; display: none;
-  }
-
-  .msg-error  { background: rgba(231,76,60,0.12); border: 1px solid rgba(231,76,60,0.3); color: #e74c3c; }
-  .msg-loading{ background: rgba(255,107,0,0.08); border: 1px solid rgba(255,107,0,0.2); color: var(--accent); }
-
-  #resultCard {
-    margin-top: 20px;
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    overflow: hidden;
+    margin: 15px 0;
+    padding: 15px;
+    border-radius: 10px;
+    font-weight: 700;
     display: none;
-    animation: slideUp 0.35s ease;
-    box-shadow: 0 12px 50px rgba(0,0,0,0.5);
   }
+  .msg-error { background: #fee; color: #c00; border: 1px solid #fcc; }
+  .msg-loading { background: #fffde7; color: #856404; border: 1px solid #ffeeba; }
 
-  @keyframes slideUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-
-  .result-header {
-    background: linear-gradient(135deg, var(--saffron) 0%, #e05e00 100%);
-    padding: 18px 20px;
-    display: flex;
-    align-items: center;
-    gap: 14px;
-  }
-
-  .uid-badge {
-    background: rgba(0,0,0,0.25);
-    border-radius: 8px;
-    padding: 8px 14px;
-    font-family: 'Space Mono', monospace;
-    font-size: 20px; font-weight: 700; color: #fff;
-    letter-spacing: 2px; flex-shrink: 0;
-  }
-
-  .result-header-text h2 { font-size: 18px; font-weight: 700; color: #1a0800; line-height: 1.2; }
-  .result-header-text p  { font-size: 12px; color: rgba(26,8,0,0.7); margin-top: 2px; font-family: 'Noto Sans Gujarati', sans-serif; }
-
-  .section-title {
-    font-family: 'Space Mono', monospace;
-    font-size: 10px; letter-spacing: 2.5px; text-transform: uppercase;
-    color: var(--saffron); padding: 16px 20px 8px; border-bottom: 1px solid var(--border);
-  }
-
-  .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--border); }
-  .info-cell { background: var(--card); padding: 14px 16px; }
-  .info-cell.full { grid-column: 1 / -1; }
-
-  .info-cell .label { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); font-family: 'Space Mono', monospace; margin-bottom: 4px; }
-  .info-cell .value { font-size: 16px; font-weight: 600; color: var(--text); line-height: 1.3; font-family: 'Rajdhani', sans-serif; }
-  .info-cell .value.highlight { color: var(--accent); font-size: 18px; }
-
-  .officer-block { padding: 14px 20px; border-bottom: 1px solid var(--border); }
-  .officer-block:last-child { border-bottom: none; }
-
-  .officer-title {
-    font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
-    color: var(--saffron); font-family: 'Space Mono', monospace;
-    margin-bottom: 8px; display: flex; align-items: center; gap: 8px;
-  }
-  .officer-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
-
-  .officer-name { font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
-
-  .officer-number {
-    display: inline-flex; align-items: center; gap: 8px;
-    background: rgba(46,204,113,0.08); border: 1px solid rgba(46,204,113,0.2);
-    border-radius: 8px; padding: 6px 12px; color: var(--green);
-    font-family: 'Space Mono', monospace; font-size: 14px;
-    text-decoration: none; margin-top: 2px;
-  }
-
-  .footer-card {
-    background: rgba(255,107,0,0.05); border-top: 1px solid var(--border);
-    padding: 14px 20px; text-align: center; font-size: 12px;
-    color: var(--muted); font-family: 'Noto Sans Gujarati', sans-serif;
-  }
-
-  .setup-box {
-    margin-top: 20px; background: rgba(255,179,71,0.06);
-    border: 1px dashed rgba(255,179,71,0.3); border-radius: 12px;
-    padding: 16px; font-size: 13px; color: var(--subtext);
-  }
-  .setup-box h3 { color: var(--accent); font-size: 14px; margin-bottom: 10px; font-family: 'Space Mono', monospace; }
-  .setup-box ol { padding-left: 18px; line-height: 1.9; }
-  .setup-box code { background: rgba(255,255,255,0.07); border-radius: 4px; padding: 1px 6px; font-size: 12px; color: var(--saffron); word-break: break-all; }
-  .config-line { background: rgba(255,255,255,0.05); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; margin-top: 12px; font-family: 'Space Mono', monospace; font-size: 12px; color: var(--accent); word-break: break-all; line-height: 1.7; }
-
-  @media (max-width: 360px) {
-    .input-row { flex-direction: column; }
-    #searchBtn { width: 100%; padding: 13px; }
-    .info-grid { grid-template-columns: 1fr; }
+  .footer-note {
+    font-family: 'Noto Sans Gujarati', sans-serif;
+    font-size: 14px;
+    color: var(--muted);
+    text-align: center;
+    margin-top: 30px;
+    padding: 10px;
   }
 </style>
 </head>
@@ -362,105 +192,73 @@
 
 <header>
   <div class="emblem">🗳️</div>
-  <div class="header-badge">વિગતવાર ઓર્ડર અંગેની માહિતીી</div>
-  <h1>અમદાવાદ મહાનગરપાલિકાના <span>વોર્ડ નં.૧૧,૧૨,૧૪ની</span> સામાન્ય ચૂંટણી</h1>
-  <p>આ વેબસાઇટ પર ફક્ત માહિતી મળશે. વિગતવાર ઓર્ડર આપના સેક્ટર ઓફીસર પાસેથી મળશે</p>
+  <h1>Election <span>Duty</span> Card</h1>
+  <p>અમદાવાદ મહાનગરપાલિકા સામાન્ય ચૂંટણી ૨૦૨૬</p>
 </header>
 
 <div class="container">
 
-  <!-- STATE 1: Checking location -->
-  <div id="geoGate">
-    <div class="geo-checking">
-      <span class="geo-icon">📍</span>
-      <h2>સ્થાન ચકાસણી થઈ રહી છે...</h2>
-      <p>
-        કૃપા કરીને <strong>Location Permission</strong> આપો.<br><br>
-        આ website ફક્ત નિર્ધારિત સ્થળ પર હાજર<br>કર્મચારીઓ માટે જ ઉપલબ્ધ છે.
-      </p>
-    </div>
+  <div id="geoGate" class="card">
+    <span class="icon-big">📍</span>
+    <h2>લોકેશન ચેક થઈ રહ્યું છે</h2>
+    <p class="gujarati">કૃપા કરીને 'Allow' અથવા 'હા' બટન પર ક્લિક કરો જેથી તમારી હાજરી ચકાસી શકાય.</p>
   </div>
 
-  <!-- STATE 2: Outside fence -->
-  <div id="blockedScreen">
-    <div class="blocked-card">
-      <span class="blocked-icon">🚫</span>
-      <h2>Access Restricted</h2>
-      <div class="blocked-msg">
-        <strong>📋 જાણ કરવામાં આવે છે</strong>
-        25/04/2026 ના રોજ સવારે શ્રીમતી જી.જી.આઈ. કેન્ટોનમેન્ટ હાઇસ્કુલ કેમ્પ, સદર બઝાર શાહીબાગ, અમદાવાદ ખાતે હાજર થયા બાદ જ આપ આપના ડીટેઇલ ઓર્ડરની માહિતી જોઇ શકશો.
-      </div>
-      <div class="location-hint">
-        📡 Your current location is outside the permitted zone.<br>
-        <span>Allowed: Within 500m of the reporting venue only.</span>
-      </div>
+  <div id="blockedScreen" class="card">
+    <span class="icon-big">🚫</span>
+    <h2 style="color:var(--red)">પહોંચ મર્યાદિત છે</h2>
+    <div class="blocked-msg gujarati">
+      જ્યારે તમે <strong>શ્રીમતી જી.જી.આઈ. કેન્ટોનમેન્ટ હાઇસ્કુલ, શાહીબાગ</strong> ખાતે હાજર થશો ત્યારે જ આ માહિતી ખુલશે.
     </div>
+    <button class="btn-large" onclick="location.reload()">ફરી પ્રયાસ કરો (Retry)</button>
   </div>
 
-  <!-- STATE 3: Inside fence — full app -->
   <div id="mainContent">
-
-    <div class="geo-ok-badge">
-      ✅ &nbsp;સ્થાન ચકાસાયું — Location Verified
+    <div class="card" style="padding: 20px; margin-bottom: 20px; border-color: var(--green);">
+      <p class="gujarati" style="color:var(--green); font-weight:700;">✅ લોકેશન વેરીફાય થઈ ગયું છે</p>
     </div>
 
-    <div class="search-card">
-      <label class="search-label" for="uidInput">&#9654; Enter Your Unique ID</label>
-      <div class="input-row">
-        <input type="text" id="uidInput" placeholder="e.g. GMB001" inputmode="text"
-               autocomplete="off" autocorrect="off" spellcheck="false" />
-        <button id="searchBtn" onclick="search()">શોધો</button>
+    <div class="card">
+      <label class="search-label">તમારો Unique ID દાખલ કરો:</label>
+      <div class="input-group">
+        <input type="text" id="uidInput" placeholder="દા.ત. GMB001" autocomplete="off">
+        <button class="btn-large" onclick="search()">માહિતી મેળવો (Search)</button>
       </div>
-      <p class="hint">તમારો Unique Number દાખલ કરો અને બટન દબાવો</p>
+      <p class="gujarati" style="font-size:14px; color:var(--muted)">તમારા ઓર્ડર પર લખેલો નંબર અહીં ટાઈપ કરો.</p>
     </div>
 
     <div id="statusMsg"></div>
     <div id="resultCard"></div>
-
-    <div class="setup-box" id="setupBox">
-      <h3>⚙️ SETUP: Replace Sheet URL</h3>
-      <ol>
-        <li>Open your Google Sheet</li>
-        <li>Click <strong>File → Share → Publish to web</strong></li>
-        <li>Select your sheet tab → choose <strong>CSV</strong> → click <strong>Publish</strong></li>
-        <li>Copy the URL and replace <code>YOUR_PUBLISHED_CSV_URL_HERE</code> in the script below</li>
-      </ol>
-      <div class="config-line">const SHEET_CSV_URL = "YOUR_PUBLISHED_CSV_URL_HERE";</div>
-    </div>
-
   </div>
 
-</div><!-- /container -->
+  <div class="footer-note">
+    નોંધ: આ ફક્ત માહિતી માટે છે. સત્તાવાર ઓર્ડર સેક્ટર ઓફીસર પાસેથી મેળવવાનો રહેશે.
+  </div>
+
+</div>
 
 <script>
-  // ═══════════════════════════════════════════════
-  //  CONFIG — Edit only these values
-  // ═══════════════════════════════════════════════
+  // CONFIG
   const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTKxlpr-uAoZV-QaeX5l5Epe0o9141kQqh-ZS3K7RpguNKret-Jlh4rwlx3OKZLJlFArnpOI8mMEjxM/pub?gid=0&single=true&output=csv";
-
-  // Geo-fence: GGI Cantonment High School Camp, Shahibaug, Ahmedabad
-  //const GEO_LAT    = 23.071863018937762;
-  //const GEO_LNG    = 72.60516052001516;
-  const GEO_LAT    =  23.225768239954164;
+  
+  const GEO_LAT = 23.225768239954164;
   const GEO_LNG = 72.63726128339411;
-  const GEO_RADIUS = 10000; // metres
+  const GEO_RADIUS = 5000; // 5 KM Radius
 
   const COL = {
-    uniqueNo:     "unique number",
-    duty:         "duty",
-    wardNo:       "ward number",
-    wardName:     "ward name",
-    boothNo:      "booth number",
-    boothName:    "booth name",
-    routeNo:      "route number",
-    zonalName:    "zonal officer name",
-    zonalNo:      "zonal officer number",
+    uniqueNo: "unique number",
+    duty: "duty",
+    wardNo: "ward number",
+    wardName: "ward name",
+    boothNo: "booth number",
+    boothName: "booth name",
+    routeNo: "route number",
+    zonalName: "zonal officer name",
+    zonalNo: "zonal officer number",
     assZonalName: "ass. zonal officer name",
-    assZonalNo:   "ass. zonal officer number",
+    assZonalNo: "ass. zonal officer number"
   };
-  // ═══════════════════════════════════════════════
 
-  // Haversine — returns distance in metres
   function haversine(lat1, lng1, lat2, lng2) {
     const R = 6371000, r = d => d * Math.PI / 180;
     const dLat = r(lat2-lat1), dLng = r(lng2-lng1);
@@ -468,56 +266,29 @@
     return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
   }
 
+  (function checkGeo() {
+    if (!navigator.geolocation) { showBlocked(); return; }
+    navigator.geolocation.getCurrentPosition(
+      pos => {
+        const d = haversine(pos.coords.latitude, pos.coords.longitude, GEO_LAT, GEO_LNG);
+        d <= GEO_RADIUS ? showMain() : showBlocked();
+      },
+      () => showBlocked(),
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
+    );
+  })();
+
   function showMain() {
-    document.getElementById('geoGate').style.display      = 'none';
+    document.getElementById('geoGate').style.display = 'none';
     document.getElementById('blockedScreen').style.display = 'none';
-    document.getElementById('mainContent').style.display   = 'block';
-    if (SHEET_CSV_URL !== "YOUR_PUBLISHED_CSV_URL_HERE")
-      document.getElementById('setupBox').style.display = 'none';
+    document.getElementById('mainContent').style.display = 'block';
   }
 
   function showBlocked() {
-    document.getElementById('geoGate').style.display      = 'none';
-    document.getElementById('mainContent').style.display  = 'none';
+    document.getElementById('geoGate').style.display = 'none';
     document.getElementById('blockedScreen').style.display = 'block';
   }
 
-  // Run geo-check immediately on load
- (function checkGeo() {
-  if (!navigator.geolocation) { 
-    showBlocked(); 
-    return; 
-  }
-
-  const geoOptions = {
-    enableHighAccuracy: false, // Change to false first to get a quick "rough" fix
-    timeout: 10000,
-    maximumAge: 30000 // Allow a slightly older location to prevent blocking
-  };
-
-  navigator.geolocation.getCurrentPosition(
-    pos => {
-      const d = haversine(pos.coords.latitude, pos.coords.longitude, GEO_LAT, GEO_LNG);
-      console.log("Distance:", d, "Accuracy:", pos.coords.accuracy);
-      
-      // Since your radius is 10,000m, this should pass easily
-      d <= GEO_RADIUS ? showMain() : showBlocked();
-    },
-    err => {
-      // If accuracy fails, try one more time with low accuracy
-      console.warn("Location error:", err.message);
-      // Optional: Just show main if it's a timeout error to prevent locking users out
-      if (err.code === err.TIMEOUT) {
-          showMain(); // Or a custom "Could not verify location" message
-      } else {
-          showBlocked();
-      }
-    },
-    geoOptions
-  );
-})();
-
-  // ── Search ────────────────────────────────────────
   let sheetData = null;
 
   function showStatus(msg, type) {
@@ -526,94 +297,85 @@
     el.className = type === 'error' ? 'msg-error' : 'msg-loading';
     el.style.display = 'block';
   }
-  function hideStatus() { document.getElementById('statusMsg').style.display = 'none'; }
+
+  async function search() {
+    const uid = document.getElementById('uidInput').value.trim();
+    if (!uid) { showStatus("⚠️ મહેરબાની કરીને ID ટાઈપ કરો", 'error'); return; }
+    
+    document.getElementById('resultCard').style.display = 'none';
+    
+    if (!sheetData) {
+      showStatus("📡 ડેટા લોડ થઈ રહ્યો છે...", 'loading');
+      try {
+        const r = await fetch(SHEET_CSV_URL);
+        const text = await r.text();
+        sheetData = parseCSV(text);
+        document.getElementById('statusMsg').style.display = 'none';
+      } catch (e) {
+        showStatus("❌ સર્વર સાથે જોડાણ થઈ શક્યું નથી", 'error');
+        return;
+      }
+    }
+
+    const match = sheetData.find(row => (row[COL.uniqueNo] || '').toLowerCase() === uid.toLowerCase());
+    if (!match) {
+      showStatus("❌ આ નંબરની વિગત મળી નથી. ફરી ચેક કરો.", 'error');
+    } else {
+      renderResult(match);
+    }
+  }
 
   function parseCSV(text) {
     const lines = text.trim().split('\n');
     const headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g,'').toLowerCase());
     return lines.slice(1).map(line => {
-      const vals = []; let cur = '', inQ = false;
-      for (let c of line) {
-        if (c==='"') { inQ=!inQ; }
-        else if (c===','&&!inQ) { vals.push(cur.trim()); cur=''; }
-        else cur+=c;
-      }
-      vals.push(cur.trim());
+      const vals = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
       const row = {};
-      headers.forEach((h,i) => row[h]=(vals[i]||'').replace(/^"|"$/g,'').trim());
+      headers.forEach((h, i) => row[h] = (vals[i] || '').replace(/^"|"$/g,'').trim());
       return row;
     });
   }
 
-  async function loadSheet() {
-    if (SHEET_CSV_URL === "YOUR_PUBLISHED_CSV_URL_HERE") {
-      showStatus("⚠️ Sheet URL not configured. Follow setup instructions.", 'error');
-      return false;
-    }
-    showStatus("📡 ડેટા લોડ થઈ રહ્યો છે...", 'loading');
-    try {
-      const r = await fetch(SHEET_CSV_URL);
-      if (!r.ok) throw 0;
-      sheetData = parseCSV(await r.text());
-      hideStatus(); return true;
-    } catch {
-      showStatus("❌ Sheet load failed. Check URL & publish settings.", 'error');
-      return false;
-    }
-  }
-
-  function dutyLabel(d) {
-    return { pr:'Presiding Officer', po1:'Polling Officer 1', po2:'Polling Officer 2', po3:'Polling Officer 3' }[(d||'').toLowerCase()] || d;
-  }
-
   function renderResult(row) {
-    const duty = (row[COL.duty]||'').toUpperCase();
     const rc = document.getElementById('resultCard');
     rc.style.display = 'block';
     rc.innerHTML = `
-      <div class="result-header">
-        <div><div class="uid-badge">${row[COL.uniqueNo]||'—'}</div></div>
-        <div class="result-header-text">
-          <h2>${dutyLabel(row[COL.duty])}</h2>
-          <p>${duty} · AMC Election 2026</p>
+      <div class="res-head">
+        <p style="font-size:12px; font-weight:bold; opacity:0.8;">UNIQUE ID: ${row[COL.uniqueNo]}</p>
+        <h2>${row[COL.duty] || 'Duty Information'}</h2>
+      </div>
+      <div class="res-body">
+        <div class="info-row">
+          <span class="info-label">Ward No.</span>
+          <span class="info-val">${row[COL.wardNo] || '-'}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Booth No.</span>
+          <span class="info-val">${row[COL.boothNo] || '-'}</span>
+        </div>
+        <div class="info-row full-row">
+          <span class="info-label">Booth Name</span>
+          <span class="info-val">${row[COL.boothName] || '-'}</span>
+        </div>
+        <div class="info-row full-row">
+          <span class="info-label">Route No.</span>
+          <span class="info-val">${row[COL.routeNo] || '-'}</span>
+        </div>
+        <div style="padding:20px; background:#f9f9f9;">
+          <p class="info-label" style="margin-bottom:10px;">Contact Officers</p>
+          <div style="margin-bottom:15px;">
+            <strong>Zonal: ${row[COL.zonalName] || '-'}</strong>
+            ${row[COL.zonalNo] ? `<a href="tel:${row[COL.zonalNo]}" class="call-btn">📞 ફોન કરો: ${row[COL.zonalNo]}</a>` : ''}
+          </div>
+          <div>
+            <strong>Asst: ${row[COL.assZonalName] || '-'}</strong>
+            ${row[COL.assZonalNo] ? `<a href="tel:${row[COL.assZonalNo]}" class="call-btn">📞 ફોન કરો: ${row[COL.assZonalNo]}</a>` : ''}
+          </div>
         </div>
       </div>
-      <div class="section-title">&#9632; Booth Details</div>
-      <div class="info-grid">
-        <div class="info-cell"><div class="label">Ward No.</div><div class="value highlight">${row[COL.wardNo]||'—'}</div></div>
-        <div class="info-cell"><div class="label">Booth No.</div><div class="value highlight">${row[COL.boothNo]||'—'}</div></div>
-        <div class="info-cell full"><div class="label">Ward Name</div><div class="value">${row[COL.wardName]||'—'}</div></div>
-        <div class="info-cell full"><div class="label">Booth Name</div><div class="value">${row[COL.boothName]||'—'}</div></div>
-        <div class="info-cell full"><div class="label">Route No.</div><div class="value">${row[COL.routeNo]||'—'}</div></div>
-      </div>
-      <div class="section-title">&#9632; Officer Contact</div>
-      <div class="officer-block">
-        <div class="officer-title">Zonal Officer</div>
-        <div class="officer-name">${row[COL.zonalName]||'—'}</div>
-        ${row[COL.zonalNo]?`<a class="officer-number" href="tel:${row[COL.zonalNo]}">📞 ${row[COL.zonalNo]}</a>`:''}
-      </div>
-      <div class="officer-block">
-        <div class="officer-title">Asst. Zonal Officer</div>
-        <div class="officer-name">${row[COL.assZonalName]||'—'}</div>
-        ${row[COL.assZonalNo]?`<a class="officer-number" href="tel:${row[COL.assZonalNo]}">📞 ${row[COL.assZonalNo]}</a>`:''}
-      </div>
-      <div class="footer-card">✅ અઆ ફક્ત માહિતી માટે છે. વિગતવાર ઓર્ડર આપને આપના વોર્ડના કમ્પાર્ટમેંટ મા સેક્ટર ઓફીસર મારફત મળશે.</div>
     `;
-    rc.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    rc.scrollIntoView({ behavior: 'smooth' });
   }
-
-  async function search() {
-    const uid = document.getElementById('uidInput').value.trim();
-    if (!uid) { showStatus("⚠️ Please enter your Unique ID first.", 'error'); return; }
-    document.getElementById('resultCard').style.display = 'none';
-    if (!sheetData) { const ok = await loadSheet(); if (!ok) return; }
-    const match = sheetData.find(row => (row[COL.uniqueNo.toLowerCase()]||'').toLowerCase() === uid.toLowerCase());
-    if (!match) { showStatus(`❌ ID "${uid}" not found. Please check and try again.`, 'error'); return; }
-    hideStatus();
-    renderResult(match);
-  }
-
-  document.addEventListener('keydown', e => { if (e.key==='Enter') search(); });
 </script>
 
 </body>
