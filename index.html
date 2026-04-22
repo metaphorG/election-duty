@@ -221,9 +221,7 @@
       જ્યારે તમે <strong>શ્રીમતી જી.જી.આઈ. કેન્ટોનમેન્ટ હાઇસ્કુલ, શાહીબાગ</strong> ખાતે હાજર થશો ત્યારે જ આ માહિતી ખુલશે.
     </div>
     
-    <div id="debugInfo" class="debug-box">
-      Location data loading...
-    </div>
+    <div id="debugInfo" class="debug-box">Location data loading...</div>
 
     <button class="btn-large" onclick="location.reload()">ફરી પ્રયાસ કરો (Retry)</button>
   </div>
@@ -277,33 +275,43 @@
     return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
   }
 
-  (function checkGeo() {
-    if (!navigator.geolocation) { 
-      updateDebug("Not Supported", "N/A", "N/A");
-      showBlocked(); 
-      return; 
-    }
-    
+  // CORE CHANGE: Improved Geolocation Logic
+  function performCheck(isHighAccuracy) {
+    const options = {
+      enableHighAccuracy: isHighAccuracy,
+      timeout: isHighAccuracy ? 8000 : 12000, // Shorter wait for high-res, longer for low-res
+      maximumAge: 300000 // Allow 5 minute old data
+    };
+
     navigator.geolocation.getCurrentPosition(
       pos => {
         const uLat = pos.coords.latitude;
         const uLng = pos.coords.longitude;
         const dist = haversine(uLat, uLng, GEO_LAT, GEO_LNG);
-        
-        updateDebug("Success", uLat, uLng, dist);
-        
-        if (dist <= GEO_RADIUS) {
-          showMain();
-        } else {
-          showBlocked();
-        }
+        updateDebug("Success (" + (isHighAccuracy ? "GPS" : "Network") + ")", uLat, uLng, dist);
+        if (dist <= GEO_RADIUS) showMain(); else showBlocked();
       },
       err => {
-        updateDebug("Error: " + err.message, "N/A", "N/A", "N/A");
-        showBlocked();
+        // If High Accuracy failed, try Low Accuracy automatically
+        if (isHighAccuracy) {
+            console.warn("High Accuracy failed, falling back...");
+            performCheck(false);
+        } else {
+            updateDebug("Error: " + err.message, "N/A", "N/A", "N/A");
+            showBlocked();
+        }
       },
-      { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
+      options
     );
+  }
+
+  (function init() {
+    if (!navigator.geolocation) { 
+      updateDebug("Not Supported", "N/A", "N/A");
+      showBlocked(); 
+    } else {
+      performCheck(true); // Start with GPS
+    }
   })();
 
   function updateDebug(status, lat, lng, dist) {
@@ -312,10 +320,8 @@
       <b>Status:</b> ${status}<br>
       <b>Your Lat:</b> ${lat}<br>
       <b>Your Lng:</b> ${lng}<br>
-      <b>Target Lat:</b> ${GEO_LAT}<br>
-      <b>Target Lng:</b> ${GEO_LNG}<br>
       <b>Distance:</b> ${dist !== "N/A" ? Math.round(dist) + " meters" : "N/A"}<br>
-      <b>Allowed Radius:</b> ${GEO_RADIUS} meters
+      <b>Allowed:</b> ${GEO_RADIUS}m
     `;
   }
 
@@ -404,6 +410,5 @@
     el.style.display = 'block';
   }
 </script>
-
 </body>
 </html>
