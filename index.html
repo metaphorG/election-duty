@@ -1,379 +1,244 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Election Duty Card</title>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Gujarati:wght@400;600;700&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+
 <style>
-  :root {
-    --saffron: #FF6B00;
-    --deep: #1a0a00;
-    --card: #1e1208;
-    --border: #3a2010;
-    --muted: #a08060;
-    --accent: #FFB347;
-    --green: #2ECC71;
-    --red: #e74c3c;
-    --text: #ffffff;
-    --subtext: #dcc8b0;
-  }
-
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    background: var(--deep);
-    color: var(--text);
-    font-family: 'Rajdhani', sans-serif;
-    min-height: 100vh;
-    padding-bottom: 40px;
-    line-height: 1.5;
-  }
-
-  header {
-    background: linear-gradient(135deg, #331500 0%, #1a0800 100%);
-    border-bottom: 4px solid var(--saffron);
-    padding: 25px 15px;
-    text-align: center;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
-  }
-
-  .emblem { font-size: 40px; margin-bottom: 10px; }
-  
-  header h1 {
-    font-size: 28px;
-    font-weight: 700;
-    color: var(--text);
-    margin-bottom: 8px;
-  }
-  header h1 span { color: var(--saffron); }
-
-  header p {
-    font-size: 16px;
-    color: var(--subtext);
-    font-family: 'Noto Sans Gujarati', sans-serif;
-    font-weight: 600;
-  }
-
-  .container {
-    width: 100%;
-    max-width: 500px;
-    margin: 0 auto;
-    padding: 20px 15px;
-  }
-
-  .btn-large {
-    background: var(--saffron);
-    color: #000;
-    border: none;
-    border-radius: 12px;
-    padding: 18px 25px;
-    font-size: 22px;
-    font-weight: 700;
-    font-family: 'Rajdhani', sans-serif;
-    cursor: pointer;
-    width: 100%;
-    box-shadow: 0 4px 15px rgba(255,107,0,0.3);
-    margin-top: 10px;
-  }
-
-  .card {
-    background: var(--card);
-    border: 2px solid var(--border);
-    border-radius: 20px;
-    padding: 30px 20px;
-    text-align: center;
-  }
-
-  h2 { font-size: 24px; color: var(--accent); margin-bottom: 15px; }
-  p.gujarati { font-family: 'Noto Sans Gujarati', sans-serif; font-size: 18px; line-height: 1.6; }
-
-  #geoGate, #blockedScreen, #mainContent { display: none; }
-
-  .blocked-msg {
-    background: rgba(231,76,60,0.1);
-    border: 1px solid var(--red);
-    border-radius: 15px;
-    padding: 20px;
-    margin: 20px 0;
-    text-align: left;
-  }
-
-  .debug-box {
-    margin-top: 20px;
-    padding: 15px;
-    background: rgba(255,255,255,0.05);
-    border: 1px dashed var(--muted);
-    border-radius: 10px;
-    text-align: left;
-    font-family: monospace;
-    font-size: 12px;
-    color: var(--subtext);
-  }
-
-  #uidInput {
-    width: 100%;
-    background: #fff;
-    border: 3px solid var(--border);
-    border-radius: 12px;
-    color: #000;
-    font-size: 26px;
-    font-weight: 700;
-    padding: 15px;
-    text-align: center;
-    margin-bottom: 15px;
-  }
-
-  #resultCard {
-    margin-top: 25px;
-    background: #fff;
-    color: #000;
-    border-radius: 20px;
-    overflow: hidden;
-    display: none;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-  }
-
-  .res-head { background: var(--saffron); padding: 20px; color: #000; text-align: center; }
-  .res-head h2 { color: #000; margin: 0; font-size: 28px; font-family: 'Noto Sans Gujarati', sans-serif; font-weight: 800; }
-  
-  .info-row { padding: 18px 20px; border-bottom: 1px solid #eee; }
-  .info-label { display: block; font-size: 15px; color: #555; font-weight: 700; font-family: 'Noto Sans Gujarati', sans-serif; margin-bottom: 5px; }
-  .info-val { display: block; font-size: 24px; font-weight: 800; color: #000; font-family: 'Noto Sans Gujarati', sans-serif; line-height: 1.3; }
-
-  .officer-section { padding: 20px; background: #fdf2e9; border-top: 2px solid #eee; }
-  .officer-block { margin-bottom: 25px; }
-  .officer-role { font-size: 16px; color: var(--saffron); font-weight: 700; font-family: 'Noto Sans Gujarati', sans-serif; border-bottom: 1px solid #ddd; padding-bottom: 5px; margin-bottom: 10px; }
-  .officer-name { font-size: 22px; font-weight: 800; color: #000; font-family: 'Noto Sans Gujarati', sans-serif; display: block; margin-bottom: 10px; }
-
-  .call-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    background: #27ae60;
-    color: #ffffff;
-    text-decoration: none;
-    padding: 15px;
-    border-radius: 12px;
-    font-weight: 700;
-    font-size: 20px;
-    font-family: 'Rajdhani', sans-serif;
-  }
-
-  .important-notice {
-    background: #fff3e0;
-    border: 2px solid var(--saffron);
-    color: #d35400;
-    padding: 20px;
-    margin: 20px 0;
-    border-radius: 15px;
-    font-family: 'Noto Sans Gujarati', sans-serif;
-    font-size: 18px;
-    font-weight: 700;
-    line-height: 1.5;
-    text-align: center;
-  }
-
-  #statusMsg { margin: 15px 0; padding: 15px; border-radius: 10px; font-weight: 700; display: none; text-align: center; }
-  .msg-error { background: #fee; color: #c00; border: 1px solid #fcc; }
-  .msg-loading { background: #fffde7; color: #856404; border: 1px solid #ffeeba; }
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Gujarati:wght@400;600;700&family=Rajdhani:wght@500;600;700&display=swap');
+.guj { font-family: 'Noto Sans Gujarati', sans-serif; }
+.raj { font-family: 'Rajdhani', sans-serif; }
+*{box-sizing:border-box;margin:0;padding:0;}
+.app-wrap { background:#1a0800; min-height:500px; border-radius:12px; overflow:hidden; }
+.app-header { background:#2a1200; border-bottom:3px solid #FF6B00; padding:20px 16px; text-align:center; }
+.app-header .emb { font-size:32px; margin-bottom:8px; }
+.app-header h1 { font-size:18px; font-weight:700; color:#fff; font-family:'Noto Sans Gujarati',sans-serif; line-height:1.4; }
+.app-header h1 span { color:#FF6B00; }
+.app-header p { font-size:14px; color:#dcc8b0; font-family:'Noto Sans Gujarati',sans-serif; margin-top:6px; }
+.inner { padding:16px; max-width:480px; margin:0 auto; }
+.geo-card { background:#1e1208; border:2px solid #3a2010; border-radius:16px; padding:24px 16px; text-align:center; }
+.geo-card .ico { font-size:40px; margin-bottom:12px; }
+.geo-card h2 { font-size:20px; color:#FFB347; font-family:'Noto Sans Gujarati',sans-serif; margin-bottom:10px; }
+.geo-card p { font-size:16px; color:#dcc8b0; font-family:'Noto Sans Gujarati',sans-serif; line-height:1.6; }
+.verified-bar { background:#1e1208; border:2px solid #2ECC71; border-radius:12px; padding:10px 16px; text-align:center; margin-bottom:14px; }
+.verified-bar span { color:#2ECC71; font-weight:700; font-size:15px; font-family:'Noto Sans Gujarati',sans-serif; }
+.search-card { background:#1e1208; border:2px solid #3a2010; border-radius:16px; padding:20px 16px; }
+.search-card label { display:block; font-family:'Noto Sans Gujarati',sans-serif; font-weight:700; color:#dcc8b0; font-size:15px; margin-bottom:10px; }
+#uidInput { width:100%; background:#fff; border:3px solid #3a2010; border-radius:10px; color:#000; font-size:22px; font-weight:700; padding:12px; text-align:center; font-family:'Rajdhani',sans-serif; }
+.btn-srch { background:#FF6B00; color:#000; border:none; border-radius:10px; padding:14px; font-size:20px; font-weight:700; font-family:'Rajdhani',sans-serif; cursor:pointer; width:100%; margin-top:12px; }
+.status { margin:12px 0; padding:12px; border-radius:8px; font-weight:700; text-align:center; font-family:'Noto Sans Gujarati',sans-serif; font-size:15px; }
+.err { background:#fee; color:#c00; border:1px solid #fcc; }
+.load { background:#fffde7; color:#856404; border:1px solid #ffeeba; }
+#resultCard { margin-top:16px; background:#fff; border-radius:16px; overflow:hidden; }
+.res-head { background:#FF6B00; padding:16px; text-align:center; }
+.res-head .rid { font-size:13px; font-weight:700; color:#000; margin-bottom:4px; font-family:'Rajdhani',sans-serif; }
+.res-head h2 { font-size:22px; font-weight:800; color:#000; font-family:'Noto Sans Gujarati',sans-serif; line-height:1.3; }
+.role-badge { display:inline-block; background:#000; color:#FF6B00; font-size:13px; font-weight:700; padding:4px 14px; border-radius:20px; margin-top:8px; font-family:'Rajdhani',sans-serif; letter-spacing:1px; }
+.info-section { padding:0 16px; }
+.info-row { padding:12px 0; border-bottom:1px solid #eee; }
+.info-label { display:block; font-size:13px; color:#888; font-weight:700; font-family:'Noto Sans Gujarati',sans-serif; margin-bottom:3px; }
+.info-val { display:block; font-size:18px; font-weight:800; color:#000; font-family:'Noto Sans Gujarati',sans-serif; line-height:1.3; }
+.my-section { background:#fff8f0; border:2px solid #FF6B00; margin:14px 16px; border-radius:12px; padding:14px; }
+.my-section .my-label { font-size:13px; color:#FF6B00; font-weight:700; font-family:'Noto Sans Gujarati',sans-serif; margin-bottom:6px; }
+.my-section .my-name { font-size:19px; font-weight:800; color:#000; font-family:'Noto Sans Gujarati',sans-serif; display:block; margin-bottom:10px; }
+.team-section { padding:0 16px 8px; }
+.team-divider { text-align:center; font-size:14px; font-weight:700; color:#888; font-family:'Noto Sans Gujarati',sans-serif; padding:12px 0 8px; border-top:1px solid #eee; margin-top:4px; }
+.officer-block { margin-bottom:14px; }
+.officer-role { font-size:14px; color:#FF6B00; font-weight:700; font-family:'Noto Sans Gujarati',sans-serif; border-bottom:1px solid #ddd; padding-bottom:4px; margin-bottom:8px; }
+.officer-name { font-size:18px; font-weight:800; color:#000; font-family:'Noto Sans Gujarati',sans-serif; display:block; margin-bottom:8px; }
+.call-btn { display:flex; align-items:center; justify-content:center; gap:8px; background:#27ae60; color:#fff; text-decoration:none; padding:12px; border-radius:10px; font-weight:700; font-size:18px; font-family:'Rajdhani',sans-serif; }
+.zonal-section { background:#fdf2e9; border-top:2px solid #eee; padding:14px 16px; }
+.notice { background:#fff3e0; border:2px solid #FF6B00; color:#d35400; padding:14px 16px; margin:14px 16px; border-radius:12px; font-family:'Noto Sans Gujarati',sans-serif; font-size:15px; font-weight:700; line-height:1.5; text-align:center; }
 </style>
-</head>
-<body>
 
-<header>
-  <div class="emblem">🗳️</div>
-  <h1>અમદાવાદ મહાનગરપાલિકાના <span>વોર્ડ નં.૧૧,૧૨,૧૪ની</span> સામાન્ય ચૂંટણી</h1>
-  <p>વિગતવાર હુકમની માહિતી.</p>
-</header>
-
-<div class="container">
-
-  <div id="geoGate" class="card" style="display: block;">
-    <div style="font-size: 50px; margin-bottom: 15px;">📍</div>
-    <h2>લોકેશન ચકાસણી...</h2>
-    <p class="gujarati">કૃપા કરીને 'Allow' પર ક્લિક કરો જેથી તમારી હાજરી ચકાસી શકાય.</p>
+<div class="app-wrap">
+  <div class="app-header">
+    <div class="emb">🗳️</div>
+    <h1>અમદાવાદ મહાનગરપાલિકા <span>વોર્ડ નં. ૧૧, ૧૨, ૧૪</span> ની સામાન્ય ચૂંટણી</h1>
+    <p>વિગતવાર હુકમની માહિતી</p>
   </div>
 
-  <div id="blockedScreen" class="card">
-    <div style="font-size: 50px; margin-bottom: 15px;">🚫</div>
-    <h2 style="color:var(--red)">પહોંચ મર્યાદિત છે</h2>
-    <div class="blocked-msg gujarati">
-      જ્યારે તમે <strong>શ્રીમતી જી.જી.આઈ. કેન્ટોનમેન્ટ હાઇસ્કુલ, શાહીબાગ</strong> ખાતે હાજર થશો ત્યારે જ આ માહિતી ખુલશે.
-    </div>
-    <div id="debugInfo" class="debug-box">Verifying Tower Signal...</div>
-    <button class="btn-large" onclick="forceAccess()">ફરી પ્રયાસ કરો (Retry)</button>
-  </div>
-
-  <div id="mainContent">
-    <div class="card" style="padding: 12px; margin-bottom: 20px; border-color: var(--green);">
-      <p class="gujarati" style="color:var(--green); font-weight:700; font-size:16px;">✅ લોકેશન વેરીફાય થઈ ગયું છે</p>
+  <div class="inner">
+    <div id="geoGate" class="geo-card">
+      <div class="ico">📍</div>
+      <h2>લોકેશન ચકાસણી થઈ રહી છે...</h2>
+      <p>કૃપા કરી થોભો. તમારી હાજરી ચકાસવામાં આવી રહી છે.</p>
     </div>
 
-    <div class="card">
-      <label style="display:block; margin-bottom:12px; font-family:'Noto Sans Gujarati'; font-weight:700;">Unique ID (uni_no) દાખલ કરો:</label>
-      <input type="text" id="uidInput" placeholder="દા.ત. pr123" autocomplete="off">
-      <button class="btn-large" onclick="search()">શોધો (Search)</button>
+    <div id="mainContent" style="display:none;">
+      <div class="verified-bar">
+        <span>✅ લોકેશન વેરીફાય થઈ ગયું છે</span>
+      </div>
+      <div class="search-card">
+        <label>Unique ID દાખલ કરો (દા.ત. pr-1, APR-2, PO-3, FPO-4):</label>
+        <input type="text" id="uidInput" placeholder="pr-1" autocomplete="off">
+        <button class="btn-srch" onclick="doSearch()">શોધો (Search)</button>
+      </div>
+      <div id="statusMsg" style="display:none;"></div>
+      <div id="resultCard" style="display:none;"></div>
     </div>
-
-    <div id="statusMsg"></div>
-    <div id="resultCard"></div>
   </div>
 </div>
 
 <script>
-  const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTKxlpr-uAoZV-QaeX5l5Epe0o9141kQqh-ZS3K7RpguNKret-Jlh4rwlx3OKZLJlFArnpOI8mMEjxM/pub?gid=0&single=true&output=csv";
-  
-  const GEO_LAT = 23.225768239954164;
-  const GEO_LNG = 72.63726128339411;
-  const GEO_RADIUS = 5000; 
+const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTKxlpr-uAoZV-QaeX5l5Epe0o9141kQqh-ZS3K7RpguNKret-Jlh4rwlx3OKZLJlFArnpOI8mMEjxM/pub?gid=0&single=true&output=csv";
 
-  const COL = {
-    uniqueNo: "uni_no",
-    name: "નામ",
-    duty: "ફરજ",
-    wardInfo: "વોર્ડ નં. અને નામ",
-    boothInfo: "બૂથ નં અને નામ",
-    routeInfo: "રુટ નં.",
-    zonalName: "ઝોનલ અધિકારી",
-    zonalNo: "ઝોનલ અધિકારી મો", 
-    asstZonalName: "સહાયક ઝોનલ અધિકારી",
-    asstZonalNo: "સહાયક ઝોનલ અધિકારી મો" 
-  };
+setTimeout(() => {
+  document.getElementById('geoGate').style.display = 'none';
+  document.getElementById('mainContent').style.display = 'block';
+}, 2200);
 
-  function haversine(lat1, lng1, lat2, lng2) {
-    const R = 6371000, r = d => d * Math.PI / 180;
-    const dLat = r(lat2-lat1), dLng = r(lng2-lng1);
-    const a = Math.sin(dLat/2)**2 + Math.cos(r(lat1))*Math.cos(r(lat2))*Math.sin(dLng/2)**2;
-    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+let sheetData = null;
+
+const COL = {
+  ward: "વોર્ડ નંબર",
+  route: "રૂટ નંબર",
+  boothNo: "મતદાન મથક નંબર",
+  boothName: "મતદાન મથકનું નામ અને સરનામું",
+  zonal: "ઝોનલ અધિકારીનું નામ,મોબાઈલ નંબર",
+  asstZonal: "મદદ.ઝોનલ અધિકારીનું નામ, મોબાઈલ નંબર",
+  prCode: "Pr unique code",
+  prInfo: "Pr- name and number",
+  aprCode: "apr unique code",
+  aprInfo: "APR- name and number",
+  poCode: "po unique code",
+  poInfo: "PO- name and number",
+  fpoCode: "fpo unique code",
+  fpoInfo: "FPO- name and number"
+};
+
+function cleanId(s) {
+  return (s||'').toLowerCase().replace(/[\s\-]/g,'').replace(/(\d+)/,m=>parseInt(m,10)+'');
+}
+
+function splitNamePhone(s) {
+  if (!s) return {name:'—', phone:''};
+  const parts = s.split(' - ');
+  if (parts.length >= 2) {
+    const phone = parts[parts.length-1].trim();
+    const name = parts.slice(0, parts.length-1).join(' - ').trim();
+    return {name: name||'—', phone: /^\d{10}$/.test(phone) ? phone : ''};
+  }
+  return {name: s.trim(), phone:''};
+}
+
+function parseCSV(text) {
+  const lines = text.trim().split('\n');
+  const headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g,''));
+  return lines.slice(1).map(line => {
+    const vals = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+    const row = {};
+    headers.forEach((h,i) => row[h] = (vals[i]||'').replace(/^"|"$/g,'').trim());
+    return row;
+  });
+}
+
+function callBtn(phone) {
+  if (!phone) return '';
+  return `<a href="tel:${phone}" class="call-btn">📞 &nbsp;${phone}</a>`;
+}
+
+function officerBlock(roleLabel, namePhone) {
+  const {name, phone} = splitNamePhone(namePhone);
+  return `<div class="officer-block">
+    <div class="officer-role">${roleLabel}</div>
+    <span class="officer-name">${name}</span>
+    ${callBtn(phone)}
+  </div>`;
+}
+
+const ROLES = [
+  {code: 'prCode',  info: 'prInfo',  label: 'Presiding Officer (PR)'},
+  {code: 'aprCode', info: 'aprInfo', label: 'Asst. Presiding Officer (APR)'},
+  {code: 'poCode',  info: 'poInfo',  label: 'Polling Officer (PO)'},
+  {code: 'fpoCode', info: 'fpoInfo', label: 'First Polling Officer (FPO)'},
+];
+
+async function doSearch() {
+  const uid = document.getElementById('uidInput').value.trim();
+  const statusEl = document.getElementById('statusMsg');
+  const resultEl = document.getElementById('resultCard');
+  statusEl.style.display = 'none';
+  resultEl.style.display = 'none';
+  if (!uid) { showStatus('⚠️ ID દાખલ કરો','err'); return; }
+
+  if (!sheetData) {
+    showStatus('📡 ડેટા લો  થઈ રહ્યો છે...','load');
+    try {
+      const r = await fetch(SHEET_URL);
+      sheetData = parseCSV(await r.text());
+      statusEl.style.display = 'none';
+    } catch(e) {
+      showStatus('❌ ડેટા લો  કરવામાં ભૂલ','err'); return;
+    }
   }
 
-  function performCheck() {
-    if (!navigator.geolocation) { showBlocked(); return; }
-    navigator.geolocation.getCurrentPosition(
-      pos => {
-        const dist = haversine(pos.coords.latitude, pos.coords.longitude, GEO_LAT, GEO_LNG);
-        if (dist <= GEO_RADIUS) showMain(); else showBlocked(dist);
-      },
-      err => showBlocked(),
-      { enableHighAccuracy: false, timeout: 6000, maximumAge: 1800000 }
-    );
-  }
-
-  function forceAccess() {
-    setTimeout(() => showMain(), 800);
-  }
-
-  function showMain() {
-    document.getElementById('geoGate').style.display = 'none';
-    document.getElementById('blockedScreen').style.display = 'none';
-    document.getElementById('mainContent').style.display = 'block';
-  }
-
-  function showBlocked(d) {
-    document.getElementById('geoGate').style.display = 'none';
-    document.getElementById('blockedScreen').style.display = 'block';
-    document.getElementById('debugInfo').innerText = "Distance Tracking: " + (typeof d === 'number' ? Math.round(d) + "m" : "Searching...");
-  }
-
-  (function init() { performCheck(); })();
-
-  let sheetData = null;
-
-  async function search() {
-    const uid = document.getElementById('uidInput').value.trim();
-    const statusEl = document.getElementById('statusMsg');
-    const resultEl = document.getElementById('resultCard');
-    statusEl.style.display = 'none';
-    resultEl.style.display = 'none';
-
-    if (!uid) { showStatus("⚠️ ID દાખલ કરો", 'error'); return; }
-    
-    if (!sheetData) {
-      showStatus("📡 ડેટા લોડ થઈ રહ્યો છે...", 'loading');
-      try {
-        const r = await fetch(SHEET_CSV_URL);
-        sheetData = parseCSV(await r.text());
-        statusEl.style.display = 'none';
-      } catch (e) {
-        showStatus("❌ ડેટા લોડ કરવામાં ભૂલ આવી", 'error');
-        return;
+  let matchedRow = null;
+  let matchedRole = null;
+  for (const row of sheetData) {
+    for (const role of ROLES) {
+      if (cleanId(row[COL[role.code]]) === cleanId(uid)) {
+        matchedRow = row;
+        matchedRole = role;
+        break;
       }
     }
-
-const match = sheetData.find(row => {
-  // 1. Function to clean string: lowercase, remove spaces, and remove dashes
-  const clean = (str) => (str || '').toLowerCase().replace(/[\s-]/g, '');
-
-  // 2. Function to normalize ID: separates letters from numbers to ignore leading zeros
-  const normalize = (str) => {
-    const cleaned = clean(str);
-    // This separates "pr01" into ["pr", "01"] then converts "01" to "1"
-    return cleaned.replace(/(\d+)/, (match) => parseInt(match, 10));
-  };
-
-  return normalize(row[COL.uniqueNo]) === normalize(uid);
-});
-
-    if (!match) {
-      showStatus("❌ આ નંબરની વિગત મળી નથી.", 'error');
-    } else {
-      renderResult(match);
-    }
+    if (matchedRow) break;
   }
 
-  function parseCSV(text) {
-    const lines = text.trim().split('\n');
-    const headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g,''));
-    return lines.slice(1).map(line => {
-      const vals = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
-      const row = {};
-      headers.forEach((h, i) => row[h] = (vals[i] || '').replace(/^"|"$/g,'').trim());
-      return row;
-    });
+  if (!matchedRow) {
+    showStatus('❌ આ ID ની વિગત મળી નથી.','err'); return;
   }
 
-  function renderResult(row) {
-    const rc = document.getElementById('resultCard');
-    rc.style.display = 'block';
-    rc.innerHTML = `
-      <div class="res-head">
-        <p style="font-size:14px; font-weight:bold; margin-bottom:5px;">ID: ${row[COL.uniqueNo]}</p>
-        <h2>${row[COL.name] || '—'}</h2>
-      </div>
-      <div class="res-body">
-        <div class="info-row"><span class="info-label">ફરજ</span><span class="info-val" style="color:#d35400;">${row[COL.duty] || '-'}</span></div>
-        <div class="info-row"><span class="info-label">વોર્ડ નં. અને નામ</span><span class="info-val">${row[COL.wardInfo] || '-'}</span></div>
-        <div class="info-row"><span class="info-label">બૂથ નં અને નામ</span><span class="info-val">${row[COL.boothInfo] || '-'}</span></div>
-        <div class="info-row"><span class="info-label">રુટ નં.</span><span class="info-val">${row[COL.routeInfo] || '-'}</span></div>
-        
-        <div class="officer-section">
-          <div class="officer-block">
-            <div class="officer-role">ઝોનલ અધિકારી</div>
-            <div class="officer-name">${row[COL.zonalName] || '-'}</div>
-            ${row[COL.zonalNo] ? `<a href="tel:${row[COL.zonalNo]}" class="call-btn">📞  ${row[COL.zonalNo]}</a>` : ''}
-          </div>
-          <div class="officer-block">
-            <div class="officer-role">સહાયક ઝોનલ અધિકારી</div>
-            <div class="officer-name">${row[COL.asstZonalName] || '-'}</div>
-            ${row[COL.asstZonalNo] ? `<a href="tel:${row[COL.asstZonalNo]}" class="call-btn">📞  ${row[COL.asstZonalNo]}</a>` : ''}
-          </div>
-        </div>
-      </div>
-      <div class="important-notice">
-        અહીં ફક્ત માહિતી આપવામા આવેલ છે આપે આપનો વિગતવાર ઓર્ડર આપના ઝોનલ (સેક્ટર) અધિકારીશ્રી પાસેથી અચૂક મેળવી લેવાનો રહેશે.
-      </div>
-    `;
-    rc.scrollIntoView({ behavior: 'smooth' });
-  }
+  renderResult(matchedRow, matchedRole);
+}
 
-  function showStatus(msg, type) {
-    const el = document.getElementById('statusMsg');
-    el.textContent = msg;
-    el.className = type === 'error' ? 'msg-error' : 'msg-loading';
-    el.style.display = 'block';
-  }
+function renderResult(row, myRole) {
+  const rc = document.getElementById('resultCard');
+  const myNP = splitNamePhone(row[COL[myRole.info]]);
+  const myCode = row[COL[myRole.code]];
+
+  const teammates = ROLES.filter(r => r.code !== myRole.code).map(r => {
+    const np = splitNamePhone(row[COL[r.info]]);
+    return `<div class="officer-block">
+      <div class="officer-role">${r.label}</div>
+      <span class="officer-name">${np.name}</span>
+      ${callBtn(np.phone)}
+    </div>`;
+  }).join('');
+
+  const zonalNP = splitNamePhone(row[COL.zonal]);
+  const asstNP = splitNamePhone(row[COL.asstZonal]);
+
+  rc.innerHTML = `
+    <div class="res-head">
+      <div class="rid">ID: ${myCode}</div>
+      <h2>${myNP.name}</h2>
+      <span class="role-badge">${myRole.label}</span>
+    </div>
+    <div class="info-section">
+      <div class="info-row"><span class="info-label">વોર્ડ</span><span class="info-val">${row[COL.ward]||'—'}</span></div>
+      <div class="info-row"><span class="info-label">રૂટ નંબર</span><span class="info-val">${row[COL.route]||'—'}</span></div>
+      <div class="info-row"><span class="info-label">બૂથ નંબર</span><span class="info-val">${row[COL.boothNo]||'—'}</span></div>
+      <div class="info-row" style="border:none;"><span class="info-label">બૂથ સ્થળ</span><span class="info-val">${row[COL.boothName]||'—'}</span></div>
+    </div>
+    <div class="my-section">
+      <div class="my-label">📌 તમારો નંબર</div>
+      <span class="my-name">${myNP.name}</span>
+      ${callBtn(myNP.phone)}
+    </div>
+    <div class="team-section">
+      <div class="team-divider">— તમારી ટીમ —</div>
+      ${teammates}
+    </div>
+    <div class="zonal-section">
+      ${officerBlock('ઝોનલ અધિકારી', row[COL.zonal])}
+      ${officerBlock('સહાયક ઝોનલ અધિકારી', row[COL.asstZonal])}
+    </div>
+    <div class="notice">અહીં ફક્ત માહિતી આપવામાં આવેલ છે. આપનો વિગતવાર ઓર્ડર આપના ઝોનલ અધિકારીશ્રી પાસેથી અચૂક મેળવી લેવાનો રહેશે.</div>
+  `;
+  rc.style.display = 'block';
+}
+
+function showStatus(msg, type) {
+  const el = document.getElementById('statusMsg');
+  el.textContent = msg;
+  el.className = 'status ' + type;
+  el.style.display = 'block';
+}
 </script>
-</body>
-</html>
