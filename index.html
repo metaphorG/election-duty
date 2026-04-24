@@ -42,7 +42,6 @@
   header p { font-size: 15px; color: var(--subtext); font-family: 'Noto Sans Gujarati', sans-serif; }
   .container { width: 100%; max-width: 480px; margin: 0 auto; padding: 16px 14px 50px; }
 
-  /* GEO GATE */
   .geo-card {
     background: var(--card); border: 2px solid var(--border);
     border-radius: 18px; padding: 36px 20px; text-align: center;
@@ -51,14 +50,12 @@
   .geo-card h2 { font-size: 22px; color: var(--accent); font-family: 'Noto Sans Gujarati', sans-serif; margin-bottom: 12px; }
   .geo-card p { font-size: 17px; color: var(--subtext); font-family: 'Noto Sans Gujarati', sans-serif; line-height: 1.65; }
 
-  /* VERIFIED BAR */
   .verified-bar {
     background: rgba(39,174,96,0.12); border: 2px solid var(--green);
     border-radius: 12px; padding: 12px 16px; text-align: center; margin-bottom: 14px;
   }
   .verified-bar span { color: var(--green); font-weight: 700; font-size: 17px; font-family: 'Noto Sans Gujarati', sans-serif; }
 
-  /* SEARCH CARD */
   .search-card {
     background: var(--card); border: 2px solid var(--border);
     border-radius: 18px; padding: 20px 16px;
@@ -68,13 +65,13 @@
     font-weight: 600; color: var(--subtext); font-size: 16px;
     margin-bottom: 12px; line-height: 1.5;
   }
-  #uidInput {
+  #phoneInput {
     width: 100%; background: #fff; border: 3px solid #ccc;
     border-radius: 12px; color: #000; font-size: 28px; font-weight: 700;
     padding: 16px 12px; text-align: center; font-family: 'Rajdhani', sans-serif;
     margin-bottom: 14px; -webkit-appearance: none; appearance: none;
   }
-  #uidInput:focus { outline: none; border-color: var(--saffron); }
+  #phoneInput:focus { outline: none; border-color: var(--saffron); }
   .btn-search {
     background: var(--saffron); color: #000; border: none;
     border-radius: 14px; padding: 18px; font-size: 22px; font-weight: 700;
@@ -83,7 +80,6 @@
   }
   .btn-search:active { opacity: 0.8; }
 
-  /* STATUS */
   .status {
     margin: 14px 0; padding: 14px; border-radius: 10px; font-weight: 700;
     text-align: center; font-family: 'Noto Sans Gujarati', sans-serif;
@@ -92,7 +88,26 @@
   .err  { background: #fee; color: #c00; border: 1px solid #fcc; }
   .load { background: #fffde7; color: #856404; border: 1px solid #ffeeba; }
 
-  /* RESULT CARD */
+  .multi-card {
+    margin-top: 14px; background: var(--card); border: 2px solid var(--border);
+    border-radius: 18px; padding: 16px;
+  }
+  .multi-card h3 {
+    font-family: 'Noto Sans Gujarati', sans-serif; color: var(--accent);
+    font-size: 17px; margin-bottom: 14px; text-align: center;
+  }
+  .match-btn {
+    display: block; width: 100%; background: #2a1200; border: 2px solid var(--border);
+    border-radius: 12px; padding: 14px 16px; margin-bottom: 10px;
+    color: var(--text); text-align: left; cursor: pointer;
+    font-family: 'Noto Sans Gujarati', sans-serif; font-size: 16px;
+    -webkit-appearance: none; appearance: none;
+  }
+  .match-btn:active { background: var(--border); }
+  .match-btn .mb-name { font-size: 18px; font-weight: 700; display: block; margin-bottom: 4px; }
+  .match-btn .mb-role { font-size: 14px; color: var(--saffron); font-weight: 600; }
+  .match-btn .mb-booth { font-size: 13px; color: var(--subtext); margin-top: 2px; }
+
   #resultCard {
     margin-top: 18px; background: #fff;
     border-radius: 18px; overflow: hidden;
@@ -133,14 +148,12 @@
 
 <div class="container">
 
-  <!-- FAKE GEO GATE -->
   <div id="geoGate" class="geo-card">
     <div class="ico">📍</div>
     <h2>લોકેશન ચકાસણી થઈ રહી છે...</h2>
     <p>કૃપા કરી થોભો.<br>તમારી હાજરી ચકાસવામાં આવી રહી છે.</p>
   </div>
 
-  <!-- MAIN CONTENT -->
   <div id="mainContent" style="display:none;">
 
     <div class="verified-bar">
@@ -149,36 +162,34 @@
 
     <div class="search-card">
       <label>
-        તમારો Unique ID દાખલ કરો<br>
-        <span style="font-size:14px;color:#a08060;">(દા.ત. pr-1, APR-2, PO-3, FPO-4)</span>
+        તમારો મોબાઈલ નંબર દાખલ કરો<br>
+        <span style="font-size:14px;color:#a08060;">(10 અંકનો નંબર)</span>
       </label>
       <input
-        type="text"
-        id="uidInput"
-        placeholder="pr-1"
+        type="tel"
+        id="phoneInput"
+        placeholder="9999999999"
         autocomplete="off"
         autocorrect="off"
-        autocapitalize="off"
         spellcheck="false"
-        inputmode="text"
+        inputmode="numeric"
         enterkeyhint="search"
+        maxlength="10"
         onkeydown="if(event.key==='Enter') doSearch()"
       >
       <button class="btn-search" onclick="doSearch()">🔍 &nbsp; શોધો (Search)</button>
     </div>
 
     <div id="statusMsg" style="display:none;" class="status"></div>
+    <div id="multiResults" style="display:none;"></div>
     <div id="resultCard" style="display:none;"></div>
 
   </div>
 </div>
 
 <script>
-// ── YOUR GOOGLE SHEET CSV URL ────────────────────────────
 const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTKxlpr-uAoZV-QaeX5l5Epe0o9141kQqh-ZS3K7RpguNKret-Jlh4rwlx3OKZLJlFArnpOI8mMEjxM/pub?gid=0&single=true&output=csv";
-// ────────────────────────────────────────────────────────
 
-// Column headers — now all English, must match your sheet exactly
 const COL = {
   ward:       "Ward",
   route:      "route",
@@ -197,13 +208,12 @@ const COL = {
 };
 
 const ROLES = [
-  { code:'prCode',  info:'prInfo',  label:'Presiding Officer (PR)'        },
-  { code:'aprCode', info:'aprInfo', label:'Asst. Presiding Officer (APR)'  },
-  { code:'poCode',  info:'poInfo',  label:'Polling Officer (PO)'           },
-  { code:'fpoCode', info:'fpoInfo', label:'First Polling Officer (FPO)'    },
+  { code:'prCode',  info:'prInfo',  label:'Presiding Officer (PR)'       },
+  { code:'aprCode', info:'aprInfo', label:'Asst. Presiding Officer (APR)' },
+  { code:'poCode',  info:'poInfo',  label:'Polling Officer (PO)'          },
+  { code:'fpoCode', info:'fpoInfo', label:'First Polling Officer (FPO)'   },
 ];
 
-// Fake geo: 2.2s delay then unlock
 setTimeout(() => {
   document.getElementById('geoGate').style.display    = 'none';
   document.getElementById('mainContent').style.display = 'block';
@@ -211,15 +221,6 @@ setTimeout(() => {
 
 let sheetData = null;
 
-// Fuzzy ID match: pr-01 = pr1 = PR1 = PR-1
-function cleanId(s) {
-  return (s || '')
-    .toLowerCase()
-    .replace(/[\s\-]/g, '')
-    .replace(/(\d+)/, m => parseInt(m, 10) + '');
-}
-
-// Split "Name - 9999999999" → {name, phone}
 function splitNamePhone(s) {
   if (!s) return { name: '—', phone: '' };
   const idx = s.lastIndexOf(' - ');
@@ -231,9 +232,8 @@ function splitNamePhone(s) {
   return { name: s.trim(), phone: '' };
 }
 
-// Parse CSV into array of row objects
 function parseCSV(text) {
-  const lines = text.trim().split('\n');
+  const lines   = text.trim().split('\n');
   const headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, ''));
   return lines.slice(1).map(line => {
     const vals = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
@@ -252,40 +252,68 @@ async function loadSheet() {
     sheetData = parseCSV(await res.text());
     document.getElementById('statusMsg').style.display = 'none';
     return true;
-  } catch (e) {
+  } catch(e) {
     showStatus('❌ ડેટા લોડ કરવામાં ભૂલ આવી. ઇન્ટરનેટ તપાસો અને ફરી પ્રયાસ કરો.', 'err');
     return false;
   }
 }
 
 async function doSearch() {
-  const uid      = document.getElementById('uidInput').value.trim();
-  const statusEl = document.getElementById('statusMsg');
-  const resultEl = document.getElementById('resultCard');
+  document.getElementById('statusMsg').style.display  = 'none';
+  document.getElementById('resultCard').style.display = 'none';
+  document.getElementById('multiResults').style.display = 'none';
 
-  statusEl.style.display = 'none';
-  resultEl.style.display = 'none';
-
-  if (!uid) { showStatus('⚠️ ID દાખલ કરો', 'err'); return; }
+  const phone = document.getElementById('phoneInput').value.trim().replace(/\D/g, '');
+  if (!phone || phone.length < 10) {
+    showStatus('⚠️ 10 અંકનો મોબાઈલ નંબર દાખલ કરો', 'err');
+    return;
+  }
 
   const ok = await loadSheet();
   if (!ok) return;
 
-  let matchedRow = null, matchedRole = null;
+  const matches = [];
   for (const row of sheetData) {
     for (const role of ROLES) {
-      if (cleanId(row[COL[role.code]]) === cleanId(uid)) {
-        matchedRow = row; matchedRole = role; break;
-      }
+      const np = splitNamePhone(row[COL[role.info]]);
+      if (np.phone === phone) matches.push({ row, role });
     }
-    if (matchedRow) break;
   }
 
-  if (!matchedRow) {
-    showStatus('❌ આ ID ની વિગત મળી નથી. ID તપાસો અને ફરી પ્રયાસ કરો.', 'err');
+  if (matches.length === 0) {
+    showStatus('❌ આ મોબાઈલ નંબરથી કોઈ વ્યક્તિ મળ્યા નથી. નંબર તપાસો અને ફરી પ્રયાસ કરો.', 'err');
     return;
   }
-  renderResult(matchedRow, matchedRole);
+  if (matches.length === 1) {
+    renderResult(matches[0].row, matches[0].role);
+  } else {
+    showMultiple(matches);
+  }
+}
+
+function showMultiple(matches) {
+  const multiEl = document.getElementById('multiResults');
+  const items = matches.map((m, i) => {
+    const np = splitNamePhone(m.row[COL[m.role.info]]);
+    return `<button class="match-btn" onclick="selectMatch(${i})">
+      <span class="mb-name">${np.name}</span>
+      <span class="mb-role">${m.role.label}</span>
+      <span class="mb-booth">બૂથ: ${m.row[COL.boothNo] || '—'} &nbsp;|&nbsp; વોર્ડ: ${m.row[COL.ward] || '—'}</span>
+    </button>`;
+  }).join('');
+  multiEl.innerHTML = `<div class="multi-card">
+    <h3>📋 આ નંબર પર ${matches.length} નામ મળ્યા — તમારું નામ પસંદ કરો:</h3>
+    ${items}
+  </div>`;
+  multiEl.style.display = 'block';
+  window._multiMatches = matches;
+  setTimeout(() => multiEl.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+}
+
+function selectMatch(i) {
+  document.getElementById('multiResults').style.display = 'none';
+  const m = window._multiMatches[i];
+  renderResult(m.row, m.role);
 }
 
 function callBtn(phone) {
@@ -361,8 +389,8 @@ function renderResult(row, myRole) {
 
 function showStatus(msg, type) {
   const el = document.getElementById('statusMsg');
-  el.textContent  = msg;
-  el.className    = 'status ' + type;
+  el.textContent   = msg;
+  el.className     = 'status ' + type;
   el.style.display = 'block';
 }
 </script>
