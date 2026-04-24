@@ -175,8 +175,11 @@
 </div>
 
 <script>
-// ── YOUR GOOGLE SHEET CSV URL ────────────────────────────
+// ── SHEET URLs ───────────────────────────────────────────
+// Main duty data sheet
 const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTKxlpr-uAoZV-QaeX5l5Epe0o9141kQqh-ZS3K7RpguNKret-Jlh4rwlx3OKZLJlFArnpOI8mMEjxM/pub?gid=0&single=true&output=csv";
+// Special list sheet (columns: Name, Mobile Number) — shows EVM collection message
+const SPECIAL_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQKXnkHzON5_y1OplDf4RuefbF7uL0mx9-oBeCF08cN5QJkhl-wcLZFTV0oUhLg8ghh37rAHb7D6O4q/pub?gid=1832761596&single=true&output=csv";
 // ────────────────────────────────────────────────────────
 
 /*
@@ -216,7 +219,8 @@ setTimeout(() => {
   document.getElementById('mainContent').style.display = 'block';
 }, 2200);
 
-let sheetData = null;
+let sheetData   = null;
+let specialData = null;
 
 // Normalize mobile: strip spaces/dashes, keep digits only
 function cleanMobile(s) {
@@ -237,15 +241,38 @@ function parseCSV(text) {
 
 async function loadSheet() {
   if (sheetData) return true;
-  showStatus('📡 ડેટા લોડ થઈ રહ્યો છે...', 'load');
   try {
     const res = await fetch(SHEET_CSV_URL);
     if (!res.ok) throw new Error('HTTP ' + res.status);
     sheetData = parseCSV(await res.text());
-    document.getElementById('statusMsg').style.display = 'none';
     return true;
   } catch (e) {
-    showStatus('❌ ડેટા લોડ કરવામાં ભૂલ આવી. ઇન્ટરનેટ તપાસો અને ફરી પ્રયાસ કરો.', 'err');
+    return false;
+  }
+}
+
+function showEvmMessage() {
+  const resultEl = document.getElementById('resultCard');
+  resultEl.innerHTML = `
+    <div style="background:#fff8e1; border:3px solid #FF6B00; border-radius:18px; padding:28px 20px; text-align:center; margin-top:4px;">
+      <div style="font-size:48px; margin-bottom:14px;">📋</div>
+      <p style="font-size:19px; font-weight:700; color:#d35400; font-family:'Noto Sans Gujarati',sans-serif; line-height:1.75;">
+        આપે EVM વિતરણ કેન્દ્ર ની સામે પહેલા માળેથી આપનો વિગતવાર ઓર્ડર અચૂક મેળવી લેવાનો રહેશે.
+      </p>
+    </div>`;
+  resultEl.style.display = 'block';
+  setTimeout(() => resultEl.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+}
+
+async function loadSpecialSheet() {
+  if (specialData) return true;
+  try {
+    const res = await fetch(SPECIAL_CSV_URL);
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    specialData = parseCSV(await res.text());
+    return true;
+  } catch (e) {
+    specialData = [];
     return false;
   }
 }
@@ -263,8 +290,30 @@ async function doSearch() {
   const mobile = cleanMobile(inputVal);
   if (mobile.length !== 10) { showStatus('⚠️ કૃપા કરી 10 અંકનો સાચો મોબાઇલ નંબર દાખલ કરો', 'err'); return; }
 
-  const ok = await loadSheet();
-  if (!ok) return;
+  showStatus('📡 ડેટા લોડ થઈ રહ્યો છે...', 'load');
+
+  // Load both sheets in parallel
+  await Promise.all([loadSheet(), loadSpecialSheet()]);
+
+  statusEl.style.display = 'none';
+
+  // 1️⃣ Check special sheet first
+  if (specialData && specialData.length) {
+    const specialMatch = specialData.find(row => {
+      const cols = Object.values(row);
+      return cols.some(v => cleanMobile(v) === mobile);
+    });
+    if (specialMatch) {
+      showEvmMessage();
+      return;
+    }
+  }
+
+  // 2️⃣ Check main duty sheet
+  if (!sheetData) {
+    showStatus('❌ ડેટા લોડ કરવામાં ભૂલ આવી. ઇન્ટરનેટ તપાસો અને ફરી પ્રયાસ કરો.', 'err');
+    return;
+  }
 
   let matchedRow = null, matchedRole = null;
   for (const row of sheetData) {
@@ -278,7 +327,7 @@ async function doSearch() {
   }
 
   if (!matchedRow) {
-    showStatus('❌ આ મોબાઇલ નંબરની વિગત મળી નથી. નંબર તપાસો અને ફરી પ્રયાસ કરો.', 'err');
+    showStatus('❌ આપનો મોબાઇલ નંબર ફરી ચકાસીને સાચો દાખલ કરો અથવા WhatsApp ગ્રુપ‌માં મૂકવામાં આવેલ PDF માંથી આપના ઓર્ડર અંગેની માહિતી મેળવો.', 'err');
     return;
   }
   renderResult(matchedRow, matchedRole);
